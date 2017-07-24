@@ -7,7 +7,7 @@ primary = {
 
 secondary = {
     "ls": ["-a", "FILEPATH"],
-    "dir": ["/ah", "FILEPATH"]
+    "dir": ["/a", "FILEPATH"]
 }
 
 # Our OS check invokes this function which swaps the primary values
