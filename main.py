@@ -30,6 +30,7 @@ def Paraphrase(cmd):
 def Awake():
     if (os.name == "posix"):
         master_dict.flip()
+        master_dict.environment = "unix"
     return "%s:~ %s$" % (socket.gethostname()[:-6], os.getlogin())
 
 Start()

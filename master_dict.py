@@ -3,12 +3,17 @@
 primary = {
     "ls": "dir",
     "clear": "cls",
+    "cd": "cd",
+    "cd..": "cd.."
 }
 
 secondary = {
     "ls": ["-a", "FILEPATH"],
-    "dir": ["/a", "FILEPATH"]
+    "dir": ["/a", "FILEPATH"],
+    "cd": ["FILEPATH"],
 }
+
+environment = "windows"
 
 # Our OS check invokes this function which swaps the primary values
 def flip():
