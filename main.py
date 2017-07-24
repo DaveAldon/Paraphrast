@@ -3,6 +3,7 @@
 import subprocess
 import socket
 import os
+import Parser
 import master_dict
 
 def Start():
@@ -10,19 +11,21 @@ def Start():
 
     while True:
         try:
+            # Format header of each line
             cmd = input("%s " % header)
             cmd = Paraphrase(cmd)
+            # Run command in a safe, non-mystery program
             proc = subprocess.Popen(cmd, shell=False)
             proc.wait()
         except Exception as e:
             print(e)
             pass
 
+# Invokes the parsing module
 def Paraphrase(cmd):
-    for command, translated_command in master_dict.primary.items():
-        if command == cmd:
-            return translated_command
+    return Parser.Parse(cmd)
 
+# One time basic OS and user information checks to simulate the UNIX terminal experience
 def Awake():
     if (os.name == "posix"):
         master_dict.flip()
