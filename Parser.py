@@ -4,15 +4,20 @@ import master_dict
 import os
 import subprocess
 
-def Parse(cmd):
+def Parse():
+    # Format header of each line
+    # TODO Change header based on current directory
+    cmd = input("%s " % master_dict.header)
+
     # Checks if it's a one word statement and simply runs off of primary if so
     if " " not in cmd:
         for command, translated_command in master_dict.primary.items():
             if command == cmd:
-                return translated_command
+                RunCommand(cmd + " %s" % master_dict.windows_supressor)
 
-    # Otherwise we're going so start doing the more complicated calculations
+    # Otherwise we're going so start doing the more complicated work
     output_cmd = []
+    # Seperate our user input into a list for easy calculations
     cmd = cmd.split()
 
     # Searches for the main command
@@ -28,24 +33,40 @@ def Parse(cmd):
                     val = master_dict.secondary.get(output_cmd[0])
                     output_cmd.append(val[index])
                 # If it's not a valid parameter, it might be a path
-                else:
-                    if master_dict.environment == "windows":
-                        param = param.replace("\\", "/")
-
-                        #output_cmd.append(param)
-                    else:
-                        param = param.replace("/", "\\")
-                        #output_cmd.append(param)
-                    if cmd[0] == "cd":
-                        try:
-                            ChangeDirectory(param)
-                        except Exception as e:
-                            print(e)
-                            pass
+                elif cmd[0] == "cd":
+                    RunCd(param)
+                    return
             break
-    return output_cmd
+    # Adds the supress error message argument
+    output_cmd.append(master_dict.windows_supressor)
+    RunCommand(output_cmd)
 
-def ChangeDirectory(dir):
-    proc = subprocess.Popen("ls", cwd=dir, shell=True)
-    proc.wait()
-    return
+def RunCd(path):
+    slash = "/"
+    if master_dict.environment == "windows":
+        slash = "\\"
+    if path == "..":
+        MoveUpCd(slash)
+    else:
+        MoveDownCd(path, slash)
+
+def MoveDownCd(path, slash):
+    path_temp = master_dict.cwd + slash + path
+    master_dict.cwd = path_temp
+    os.chdir(master_dict.cwd)
+
+def MoveUpCd(slash):
+    path_temp = master_dict.cwd.split(slash)
+    path_temp.pop()
+    master_dict.cwd = slash.join(path_temp)
+    os.chdir(master_dict.cwd)
+
+def RunCommand(cmd):
+    try:
+        # Run the command
+        # TODO Find working way to use shell=False on windows
+        proc = subprocess.Popen(cmd, shell=True)
+        proc.wait()
+    except Exception as e:
+        print(e)
+        pass
