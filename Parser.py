@@ -2,6 +2,7 @@
 
 import master_dict
 import os
+import subprocess
 
 def Parse(cmd):
     # Checks if it's a one word statement and simply runs off of primary if so
@@ -27,20 +28,24 @@ def Parse(cmd):
                     val = master_dict.secondary.get(output_cmd[0])
                     output_cmd.append(val[index])
                 # If it's not a valid parameter, it might be a path
-                elif master_dict.environment == "windows":
-                    param = param.replace("\\", "/")
-                    if cmd[0] == "cd":
-                        ChangeDirectory(param)
-                    output_cmd.append(param)
                 else:
-                    param = param.replace("/", "\\")
-                    output_cmd.append(param)
+                    if master_dict.environment == "windows":
+                        param = param.replace("\\", "/")
+
+                        #output_cmd.append(param)
+                    else:
+                        param = param.replace("/", "\\")
+                        #output_cmd.append(param)
+                    if cmd[0] == "cd":
+                        try:
+                            ChangeDirectory(param)
+                        except Exception as e:
+                            print(e)
+                            pass
             break
     return output_cmd
 
 def ChangeDirectory(dir):
-    try:
-        os.chdir(dir)
-    except Exception as e:
-        print(e)
-        pass
+    proc = subprocess.Popen("ls", cwd=dir, shell=True)
+    proc.wait()
+    return

@@ -14,13 +14,15 @@ def Start():
             # Format header of each line
             cmd = input("%s " % header)
             cmd = Paraphrase(cmd)
-            # Run the command
-            # TODO Find working way to use shell=False on windows
-            proc = subprocess.Popen(cmd, shell=True)
-            proc.wait()
         except Exception as e:
             print(e)
             pass
+
+def RunCmdInDirectory(cmd, dir):
+    # Run the command
+    # TODO Find working way to use shell=False on windows
+    proc = subprocess.Popen(cmd, shell=True)
+    proc.wait()
 
 # Invokes the parsing module
 def Paraphrase(cmd):
