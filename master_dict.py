@@ -4,7 +4,6 @@ primary = {
     "ls": "dir",
     "clear": "cls",
     "cd": "cd",
-    "cd..": "cd.."
 }
 
 secondary = {

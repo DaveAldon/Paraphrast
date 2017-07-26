@@ -13,7 +13,9 @@ def Parse():
     if " " not in cmd:
         for command, translated_command in master_dict.primary.items():
             if command == cmd:
-                RunCommand(cmd + " %s" % master_dict.windows_supressor)
+                #RunCommand(cmd)
+                RunCommand(translated_command + " %s" % master_dict.windows_supressor)
+                return
 
     # Otherwise we're going so start doing the more complicated work
     output_cmd = []
