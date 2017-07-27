@@ -4,12 +4,16 @@ primary = {
     "ls": "dir",
     "clear": "cls",
     "cd": "cd",
+    "ping": "ping",
+    "ps": "tasklist",
+    "cat": "type",
 }
 
 secondary = {
     "ls": ["-a", "FILEPATH"],
     "dir": ["/a", "FILEPATH"],
-    "cd": ["FILEPATH"],
+    "cd": ["..", "FILEPATH"],
+    "ping": ["ADDRESS"],
 }
 
 windows_supressor = "2>nul"

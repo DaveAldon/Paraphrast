@@ -11,10 +11,17 @@ def Parse():
 
     # Checks if it's a one word statement and simply runs off of primary if so
     if " " not in cmd:
+        # TODO Put special cases in one spot
+        if cmd == "cd..":
+            MoveUpCd("/")
+            return
         for command, translated_command in master_dict.primary.items():
             if command == cmd:
-                #RunCommand(cmd)
-                RunCommand(translated_command + " %s" % master_dict.windows_supressor)
+                # TODO Make OS check happen once and trigger everything automatically
+                if master_dict.environment == "windows":
+                    RunCommand(translated_command + " %s" % master_dict.windows_supressor)
+                else:
+                    RunCommand(translated_command)
                 return
 
     # Otherwise we're going so start doing the more complicated work
@@ -38,19 +45,21 @@ def Parse():
                 elif cmd[0] == "cd":
                     RunCd(param)
                     return
-            break
-    # Adds the supress error message argument
-    output_cmd.append(master_dict.windows_supressor)
-    RunCommand(output_cmd)
+            # Adds the supress error message argument
+            if master_dict.environment == "windows":
+                output_cmd.append(master_dict.windows_supressor)
+            RunCommand(output_cmd)
+            return
+    print("Command Not Found")
 
 def RunCd(path):
     slash = "/"
     if master_dict.environment == "windows":
         slash = "\\"
-    if path == "..":
-        MoveUpCd(slash)
-    else:
+    if path not in "..":
         MoveDownCd(path, slash)
+    else:
+        MoveUpCd(slash)
 
 def MoveDownCd(path, slash):
     path_temp = master_dict.cwd + slash + path
@@ -67,7 +76,10 @@ def RunCommand(cmd):
     try:
         # Run the command
         # TODO Find working way to use shell=False on windows
-        proc = subprocess.Popen(cmd, shell=True)
+        if master_dict.environment == "windows":
+            proc = subprocess.Popen(cmd, shell=True)
+        else:
+            proc = subprocess.Popen(cmd, shell=False)
         proc.wait()
     except Exception as e:
         print(e)
