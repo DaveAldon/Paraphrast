@@ -12,14 +12,9 @@ primary = {
 secondary = {
     "ls": ["-a", "FILEPATH"],
     "dir": ["/a", "FILEPATH"],
-    "cd": ["..", "FILEPATH"],
+    "cd": ["FILEPATH"],
     "ping": ["ADDRESS"],
 }
-
-windows_supressor = "2>nul"
-environment = "windows"
-cwd = ""
-header = ""
 
 # Our OS check invokes this function which swaps the primary values
 def flip():
