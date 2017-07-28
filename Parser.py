@@ -12,23 +12,24 @@ header = ""
 slash = "\\"
 
 def Parse():
-
+    global slash
     # Format header of each line
     # TODO Change header based on current directory
     cmd = input("%s " % header)
     # Seperate our user input into a list for easy calculations
     cmd = cmd.split()
+
     # Checks if it's a one word statement and simply runs off of primary if so. Saves some time
     if len(cmd) < 2:
-        # TODO Put special cases in one spot
-        if cmd == "cd..":
-            MoveUpCd("/")
+        # TODO calculate special cases in a seperate location
+        if cmd[0] == "cd..":
+            MoveUpCd(slash)
             return
         for command, translated_command in master_dict.primary.items():
-            if command == cmd:
+            if command == cmd[0]:
                 # TODO Make OS check happen once and trigger everything automatically
                 if env == 2:
-                    RunCommand(translated_command + " %s" % windows_supressor)
+                    RunCommand("%s %s" % (translated_command, windows_supressor))
                 else:
                     RunCommand(translated_command)
                 return
@@ -47,11 +48,13 @@ def Parse():
                     index = command_keys.index(param)
                     val = master_dict.secondary.get(output_cmd[0])
                     output_cmd.append(val[index])
-                    print(output_cmd)
                 # If it's not a valid parameter, it might be a path
+                # TODO calculate special cases in a seperate location
                 elif cmd[0] == "cd":
                     RunCd(param)
                     return
+                elif cmd[0] == "ping":
+                    output_cmd.append(param)
             # Adds the supress error message argument
             if env == 2:
                 output_cmd.append(windows_supressor)
@@ -61,13 +64,15 @@ def Parse():
 
 def RunCd(path):
     global slash
-    #TODO continue to test that this is working properly
-    MoveDownCd(path) if path not in ".." else MoveUpCd()
+    # TODO continue to test that this is working properly
+    if path not in "..":
+        MoveDownCd(path)
+    else:
+        MoveUpCd()
 
 def MoveDownCd(path):
     global cwd, slash
-    path_temp = cwd + slash + path
-    cwd = path_temp
+    cwd = cwd + slash + path
     os.chdir(cwd)
 
 def MoveUpCd():
@@ -85,7 +90,6 @@ def RunCommand(cmd):
         proc.wait()
     except Exception as e:
         print(e)
-        pass
 
 # One time basic OS and user information checks to simulate the UNIX terminal experience
 def Awake():
