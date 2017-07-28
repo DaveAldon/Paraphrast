@@ -16,6 +16,10 @@ secondary = {
     "ping": ["ADDRESS"],
 }
 
+special = {
+    "cd": "RunCd",
+}
+
 # Our OS check invokes this function which swaps the primary values
 def flip():
     global primary

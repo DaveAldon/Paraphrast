@@ -45,3 +45,6 @@ So now we can do this and stay happy...
 2. cd to the extracted folder and run main.py
 3. Begin entering commands opposite the OS your on
 4. Submit bug reports to the issues section of this project
+
+## Reviews
+> "It's great!" - David Crawford

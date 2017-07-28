@@ -23,7 +23,7 @@ def Parse():
     if len(cmd) < 2:
         # TODO calculate special cases in a seperate location
         if cmd[0] == "cd..":
-            MoveUpCd(slash)
+            MoveUpCd()
             return
         for command, translated_command in master_dict.primary.items():
             if command == cmd[0]:
@@ -50,17 +50,27 @@ def Parse():
                     output_cmd.append(val[index])
                 # If it's not a valid parameter, it might be a path
                 # TODO calculate special cases in a seperate location
-                elif cmd[0] == "cd":
-                    RunCd(param)
-                    return
-                elif cmd[0] == "ping":
-                    output_cmd.append(param)
+                else: Special(cmd[0], param)
+                #elif cmd[0] == "cd":
+                #    RunCd(param)
+                #    return
+                #elif cmd[0] == "ping":
+                #    output_cmd.append(param)
             # Adds the supress error message argument
             if env == 2:
                 output_cmd.append(windows_supressor)
             RunCommand(output_cmd)
             return
     print("Command Not Found")
+
+def Special(prim, sec):
+    for v, k in master_dict.special.items():
+        print(v + k)
+        print(prim + sec)
+        if prim == v:
+            # TODO get safe dynamic method calls working instead of eval()
+            #globals()[k] = sec
+            eval(k + "('" + sec + "')" )
 
 def RunCd(path):
     global slash
