@@ -4,24 +4,26 @@ import master_dict
 import os
 import subprocess
 import socket
+import shlex
 
 windows_supressor = "2>nul"
 env = 2
 cwd = ""
 header = ""
 slash = "\\"
+output_cmd = []
 
 def Parse():
-    global slash
+    global slash, output_cmd
     # Format header of each line
     # TODO Change header based on current directory
     cmd = input("%s " % header)
     # Seperate our user input into a list for easy calculations
-    cmd = cmd.split()
+    cmd = shlex.split(cmd)
 
     # Checks if it's a one word statement and simply runs off of primary if so. Saves some time
     if len(cmd) < 2:
-        # TODO calculate special cases in a seperate location
+        # TODO calculate one line special cases in a seperate location
         if cmd[0] == "cd..":
             MoveUpCd()
             return
@@ -34,8 +36,7 @@ def Parse():
                     RunCommand(translated_command)
                 return
 
-    # Otherwise we're going so start doing the more complicated work
-    output_cmd = []
+    # Otherwise we're going so start doing the more complicated work...
     # Searches for the main command
     for command, command_keys in master_dict.secondary.items():
         if command == cmd[0]:
@@ -48,14 +49,12 @@ def Parse():
                     index = command_keys.index(param)
                     val = master_dict.secondary.get(output_cmd[0])
                     output_cmd.append(val[index])
-                # If it's not a valid parameter, it might be a path
-                # TODO calculate special cases in a seperate location
-                else: Special(cmd[0], param)
-                #elif cmd[0] == "cd":
-                #    RunCd(param)
-                #    return
-                #elif cmd[0] == "ping":
-                #    output_cmd.append(param)
+                # If it's not a valid parameter, it might be a special command
+                elif Special(cmd[0], param) == 0:
+                    return
+                else:
+                    output_cmd.append(param)
+
             # Adds the supress error message argument
             if env == 2:
                 output_cmd.append(windows_supressor)
@@ -65,12 +64,13 @@ def Parse():
 
 def Special(prim, sec):
     for v, k in master_dict.special.items():
-        print(v + k)
-        print(prim + sec)
         if prim == v:
-            # TODO get safe dynamic method calls working instead of eval()
-            #globals()[k] = sec
-            eval(k + "('" + sec + "')" )
+            try:
+                # Dynamically call the function indicated in our special dictionary
+                globals()[k](sec)
+                return 0
+            except Exception as e:
+                return 1
 
 def RunCd(path):
     global slash
@@ -92,16 +92,16 @@ def MoveUpCd():
     cwd = slash.join(path_temp)
     os.chdir(cwd)
 
+# After everything has been properly assembled, we run it
 def RunCommand(cmd):
     try:
-        # Run the command
         # TODO Find working way to use shell=False on windows
         proc = subprocess.Popen(cmd, shell=True) if env == 2 else subprocess.Popen(cmd, shell=False)
         proc.wait()
     except Exception as e:
         print(e)
 
-# One time basic OS and user information checks to simulate the UNIX terminal experience
+# One time basic OS and user information checks to simulate the Unix terminal experience
 def Awake():
     global env, cwd, header, slash
     if (os.name == "posix"):
@@ -109,4 +109,5 @@ def Awake():
         env = 1
         slash = "/"
     cwd = os.getcwd()
-    header = "%s:~ %s$" % (socket.gethostname()[:-6], os.getlogin())
+    machine_name = socket.gethostname().split(".")
+    header = "%s:~ %s$" % (machine_name[0], os.getlogin())
