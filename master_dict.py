@@ -7,6 +7,9 @@ primary = {
     "ping": "ping",
     "ps": "tasklist",
     "cat": "type",
+    "vm_stat": "mem",
+    # TODO vm_stat is for macs, but "free" is the linux variant. Both should
+    # map to "mem" but mem should map to the appropriate OS
 }
 
 secondary = {

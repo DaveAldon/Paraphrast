@@ -15,11 +15,18 @@ output_cmd = []
 
 def Parse():
     global slash, output_cmd
+    output_cmd[:] = []
     # Format header of each line
     # TODO Change header based on current directory
     cmd = input("%s " % header)
+
     # Seperate our user input into a list for easy calculations
-    cmd = shlex.split(cmd)
+    # Needs try/catch because we don't want to crash if missing end quotes
+    try:
+        cmd = shlex.split(cmd)
+    except Exception as e:
+        print("%s %s" % (header, e))
+        return
 
     # Checks if it's a one word statement and simply runs off of primary if so. Saves some time
     if len(cmd) < 2:
@@ -60,7 +67,7 @@ def Parse():
                 output_cmd.append(windows_supressor)
             RunCommand(output_cmd)
             return
-    print("Command Not Found")
+    print("%s %s" % (header, "command not found"))
 
 def Special(prim, sec):
     for v, k in master_dict.special.items():
