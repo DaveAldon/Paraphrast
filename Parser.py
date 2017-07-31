@@ -16,9 +16,12 @@ output_cmd = []
 def Parse():
     global slash, output_cmd
     output_cmd[:] = []
-    # Format header of each line
+
+    # Format header of each line. Repeats if nothing was entered
     # TODO Change header based on current directory
-    cmd = input("%s " % header)
+    cmd = ""
+    while not cmd:
+        cmd = input("%s " % header)
 
     # Seperate our user input into a list for easy calculations
     # Needs try/catch because we don't want to crash if missing end quotes
