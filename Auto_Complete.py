@@ -1,32 +1,27 @@
-import subprocess
+try:
+  import readline
+except ImportError:
+  import pyreadline as readline
 
-cmd = input("Directory: ")
+class Completer(object):
+    def __init__(self, options):
+        self.options = sorted(options)
 
-s = subprocess.Popen(["dir"], shell=True, stdout=subprocess.PIPE).stdout
-service_state = s.read().splitlines()
+    def complete(self, text, state):
+        if state == 0:  # on first trigger, build possible matches
+            if text:  # cache matches (entries that start with entered text)
+                self.matches = [s for s in self.options
+                                    if s and s.startswith(text)]
+            else:  # no text entered, all matches possible
+                self.matches = self.options[:]
 
-temp_li = []
-li = []
-
-for i in service_state:
-    temp_li.append(i.decode('ascii'))
-
-for i in temp_li[7:-2]:
-    li.append(i.split()[4])
-
-for i in li:
-    if i.startswith(cmd):
-        #print(i)
-        break
-
-import sys
-
-to = 1000
-digits = len(str(to - 1))
-delete = "\b" * (digits)
-for i in range(to):
-    #if i.startswith(cmd):
-    print("{0}{1:{2}}".format(delete, i, digits), end="")
-    sys.stdout.flush()
-
-#print(li)
+        # return match indexed by state
+        try:
+            return self.matches[state]
+        except IndexError:
+            return None
+            
+def Bind(cmds):
+    completer = Completer(cmds)
+    readline.set_completer(completer.complete)
+    readline.parse_and_bind('tab: complete')
