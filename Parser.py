@@ -5,6 +5,8 @@ import os
 import subprocess
 import socket
 import shlex
+from Auto_Complete import SystemCompleter
+from prompt_toolkit.shortcuts import get_input
 
 windows_supressor = "2>nul"
 env = 2
@@ -12,23 +14,33 @@ cwd = ""
 header = ""
 slash = "\\"
 output_cmd = []
+completer = SystemCompleter()
 
 def Parse():
+    cmd = ""
+    try:
+        cmd = get_input(header, completer=completer)
+    except EOFError:
+        return
+    except KeyboardInterrupt:
+        return
+    except Exception as e:
+        print("%s%s" % (header, e))
+
     global slash, output_cmd
     output_cmd[:] = []
 
     # Format header of each line. Repeats if nothing was entered
     # TODO Change header based on current directory
-    cmd = ""
     while not cmd:
-        cmd = input("%s " % header)
+        cmd = input(header)
 
     # Seperate our user input into a list for easy calculations
     # Needs try/catch because we don't want to crash if missing end quotes
     try:
         cmd = shlex.split(cmd)
     except Exception as e:
-        print("%s %s" % (header, e))
+        print("%s%s" % (header, e))
         return
 
     # Checks if it's a one word statement and simply runs off of primary if so. Saves some time
@@ -70,7 +82,7 @@ def Parse():
                 output_cmd.append(windows_supressor)
             RunCommand(output_cmd)
             return
-    print("%s %s" % (header, "command not found"))
+    print("%s%s" % (header, "command not found"))
 
 def Special(prim, sec):
     for v, k in master_dict.special.items():
@@ -120,4 +132,4 @@ def Awake():
         slash = "/"
     cwd = os.getcwd()
     machine_name = socket.gethostname().split(".")
-    header = "%s:~ %s$" % (machine_name[0], os.getlogin())
+    header = "%s:~ %s$ " % (machine_name[0], os.getlogin())
