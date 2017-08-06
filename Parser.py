@@ -5,8 +5,9 @@ import os
 import subprocess
 import socket
 import shlex
-import Auto_Complete
+from prompt_toolkit.shortcuts import get_input
 
+completer = None
 windows_supressor = "2>nul"
 env = 2
 cwd = ""
@@ -15,22 +16,30 @@ slash = "\\"
 output_cmd = []
 
 def Parse():
+    cmd = ""
+    try:
+        cmd = get_input(header, completer=completer)
+    except EOFError:
+        return
+    except KeyboardInterrupt:
+        exit()
+    except Exception as e:
+        print("%s%s" % (header, e))
+
     global slash, output_cmd
     output_cmd[:] = []
 
     # Format header of each line. Repeats if nothing was entered
     # TODO Change header based on current directory
-    cmd = ""
     while not cmd:
-
-        cmd = input("%s " % header)
+        cmd = input(header)
 
     # Seperate our user input into a list for easy calculations
     # Needs try/catch because we don't want to crash if missing end quotes
     try:
         cmd = shlex.split(cmd)
     except Exception as e:
-        print("%s %s" % (header, e))
+        print("%s%s" % (header, e))
         return
 
     # Checks if it's a one word statement and simply runs off of primary if so. Saves some time
@@ -59,7 +68,7 @@ def Parse():
                 # If our modifier is in the modifier list, then we want the corresponding modifier from its translation
                 if param in command_keys:
                     index = command_keys.index(param)
-                    val = master_dict.secondary.get(output_cmd[0])
+                    val = secondary_dict.get(output_cmd[0])
                     output_cmd.append(val[index])
                 # If it's not a valid parameter, it might be a special command
                 elif Special(cmd[0], param) == 0:
@@ -72,10 +81,10 @@ def Parse():
                 output_cmd.append(windows_supressor)
             RunCommand(output_cmd)
             return
-    print("%s %s" % (header, "command not found"))
+    print("%s%s" % (header, "command not found"))
 
 def Special(prim, sec):
-    for v, k in master_dict.special.items():
+    for v, k in special_dict.items():
         if prim == v:
             try:
                 # Dynamically call the function indicated in our special dictionary
@@ -129,11 +138,15 @@ def Bind(cmds):
 
 # One time basic OS and user information checks to simulate the Unix terminal experience
 def Awake():
-    global env, cwd, header, slash
+    global env, cwd, header, slash, completer
     if (os.name == "posix"):
-        master_dict.flip()
+        # Swaps the primary values
+        master_dict.primary = {v: k for k, v in master_dict.primary.items()}
         env = 1
         slash = "/"
+    #This is called after the flip so that the auto completer is accessing the latest dictionary
+    from Auto_Complete import SystemCompleter
+    completer = SystemCompleter()
     cwd = os.getcwd()
     machine_name = socket.gethostname().split(".")
-    header = "%s:~ %s$" % (machine_name[0], os.getlogin())
+    header = "%s:~ %s$ " % (machine_name[0], os.getlogin())

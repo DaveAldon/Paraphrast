@@ -1,27 +1,57 @@
-try:
-  import readline
-except ImportError:
-  import pyreadline as readline
+from __future__ import unicode_literals
+from __future__ import print_function
+from prompt_toolkit.contrib.completers.filesystem import PathCompleter
+from prompt_toolkit.shortcuts import get_input
+from prompt_toolkit.contrib.regular_languages.completion import GrammarCompleter
+from prompt_toolkit.contrib.regular_languages.compiler import compile
+from prompt_toolkit.contrib.completers.filesystem import ExecutableCompleter
+from prompt_toolkit.contrib.completers import WordCompleter
+import master_dict
 
-class Completer(object):
-    def __init__(self, options):
-        self.options = sorted(options)
+__all__ = (
+    'SystemCompleter',
+)
 
-    def complete(self, text, state):
-        if state == 0:  # on first trigger, build possible matches
-            if text:  # cache matches (entries that start with entered text)
-                self.matches = [s for s in self.options
-                                    if s and s.startswith(text)]
-            else:  # no text entered, all matches possible
-                self.matches = self.options[:]
+class SystemCompleter(GrammarCompleter):
+    """
+    Completer for system commands.
+    """
+    def __init__(self):
+        # Compile grammar.
+        g = compile(
+            r"""
+                # First we have an executable.
+                (?P<executable>[^\s]+)
+                # Ignore literals in between.
+                (
+                    \s+
+                    ("[^"]*" | '[^']*' | [^'"]+ )
+                )*
+                \s+
+                # Secondary grammar
+                (
+                    (?P<filename>[^\s]+) |
+                    -(?P<modifier>[^\s]+) |
+                    "(?P<double_quoted_filename>[^\s]+)" |
+                    '(?P<single_quoted_filename>[^\s]+)'
+                )
+            """,
+            escape_funcs={
+                'double_quoted_filename': (lambda string: string.replace('"', '\\"')),
+                'single_quoted_filename': (lambda string: string.replace("'", "\\'")),
+            },
+            unescape_funcs={
+                'double_quoted_filename': (lambda string: string.replace('\\"', '"')),  # XXX: not enterily correct.
+                'single_quoted_filename': (lambda string: string.replace("\\'", "'")),
+            })
 
-        # return match indexed by state
-        try:
-            return self.matches[state]
-        except IndexError:
-            return None
-            
-def Bind(cmds):
-    completer = Completer(cmds)
-    readline.set_completer(completer.complete)
-    readline.parse_and_bind('tab: complete')
+        # Create GrammarCompleter
+        super(SystemCompleter, self).__init__(
+            g,
+            {
+                'executable': WordCompleter(master_dict.primary, meta_dict=master_dict.primary),
+                'modifier': WordCompleter(master_dict.secondary),
+                'filename': PathCompleter(only_directories=False, expanduser=True),
+                'double_quoted_filename': PathCompleter(only_directories=False, expanduser=True),
+                'single_quoted_filename': PathCompleter(only_directories=False, expanduser=True),
+            })

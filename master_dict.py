@@ -22,8 +22,3 @@ secondary = {
 special = {
     "cd": "RunCd",
 }
-
-# Our OS check invokes this function which swaps the primary values
-def flip():
-    global primary
-    primary = {v: k for k, v in primary.items()}
