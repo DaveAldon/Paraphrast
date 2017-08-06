@@ -7,11 +7,18 @@
 
 ***
 
-It all started when I accidentally typed "ls" into a Windows CLI for the _**last**_ time...
+It all started when I accidentally typed "ls" into a Windows command prompt for the _**last**_ time...
 
 ![Wrong command](https://scontent.xx.fbcdn.net/v/t1.0-9/20294488_807229002782102_3555223817833664693_n.jpg?oh=5aafd12f3b0eca1a35afd0a4db1cea57&oe=5A085F8C "Failure!")
 
 If you frequently work between Unix and DOS prompts, it can be a pain switching between syntaxes. Or even if you work solely on Unix and have to check something quick, and the only thing around is a Windows machine and you _don't know any DOS commands_, it makes happy people sad.
+
+### "But wait! There's already terminal emulators out there that do this!"
+
+Well sorta. 
+1. [Cygwin](https://www.cygwin.com/): one of the most popular, but it doesn't have a Unix version that translates DOS commands, it wasn't made in Python :grin:, and it's more like a GNU OS without a kernel than a terminal emulator. It provides functionality far beyond and completely different than what we're looking for, and we want something simple, right?
+2. [MSYS](http://www.mingw.org/wiki/MSYS): taken directly from their homepage, "A common misunderstanding is MSYS is 'UNIX on Windows,' MSYS by itself does not contain a compiler or a C library, therefore does not give the ability to magically port UNIX programs over to Windows..." but we _do_ want magic!
+3. _Your Favorite VM_: Of course you could always just fire up a VM of your favorite OS, but that's a tad bit inconvenient, isn't it? All we want are our commands translated into whatever OS we're using.
 
 ## Enter Paraphrast
 We want what we type _paraphrased_ into the correct syntax for our OS. Paraphrast takes the work out of remembering two syntaxes, and let's you just focus on one.
@@ -32,18 +39,18 @@ So now we can do this and stay happy...
 - Command elevation (sudo equivalents)
 - Make it portable so that machines without Python can run it
 - Special Paraphrast configuration commands
-- Error pipeline built in (if a command should work but doesn't, make it easy for user to send relevant information to me from Paraphrast)
-- Crowd Source Dictionary (While I continue to add commands, you might have a favorite one that you want next)
-- Possible external dictionary? (This would allow for updating simple syntax translations without updating the code)
 
 ## Current Requirements
 - Python 3+
 - Windows or Unix OS
 
+## 3rd Party Plugins
+- Prompt-Toolkit
+
 ## Current Instructions
 1. Download and extract Paraphrast from Github
 2. cd to the extracted folder and run main.py
-3. Begin entering commands opposite the OS your on
+3. Begin entering commands opposite the OS you're on
 4. Submit bug reports to the issues section of this project
 
 ## Reviews

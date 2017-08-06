@@ -122,6 +122,20 @@ def RunCommand(cmd):
     except Exception as e:
         print(e)
 
+# TODO Get cd dynamic auto complete working
+def AutoCompleteCd(path):
+    s = subprocess.Popen(["ls", path], shell=True, stdout=subprocess.PIPE).stdout
+    service_state = s.read().splitlines()
+    temp_li = []
+    li = []
+    for i in service_state:
+        temp_li.append(i.decode('ascii'))
+    for i in temp_li[7:-2]:
+        li.append(i.split()[4])
+
+def Bind(cmds):
+    Auto_Complete.Bind(cmds)
+
 # One time basic OS and user information checks to simulate the Unix terminal experience
 def Awake():
     global env, cwd, header, slash, completer
