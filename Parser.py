@@ -5,16 +5,15 @@ import os
 import subprocess
 import socket
 import shlex
-from Auto_Complete import SystemCompleter
 from prompt_toolkit.shortcuts import get_input
 
+completer = None
 windows_supressor = "2>nul"
 env = 2
 cwd = ""
 header = ""
 slash = "\\"
 output_cmd = []
-completer = SystemCompleter()
 
 def Parse():
     cmd = ""
@@ -23,7 +22,7 @@ def Parse():
     except EOFError:
         return
     except KeyboardInterrupt:
-        return
+        exit()
     except Exception as e:
         print("%s%s" % (header, e))
 
@@ -69,7 +68,7 @@ def Parse():
                 # If our modifier is in the modifier list, then we want the corresponding modifier from its translation
                 if param in command_keys:
                     index = command_keys.index(param)
-                    val = master_dict.secondary.get(output_cmd[0])
+                    val = secondary_dict.get(output_cmd[0])
                     output_cmd.append(val[index])
                 # If it's not a valid parameter, it might be a special command
                 elif Special(cmd[0], param) == 0:
@@ -85,7 +84,7 @@ def Parse():
     print("%s%s" % (header, "command not found"))
 
 def Special(prim, sec):
-    for v, k in master_dict.special.items():
+    for v, k in special_dict.items():
         if prim == v:
             try:
                 # Dynamically call the function indicated in our special dictionary
@@ -125,11 +124,15 @@ def RunCommand(cmd):
 
 # One time basic OS and user information checks to simulate the Unix terminal experience
 def Awake():
-    global env, cwd, header, slash
+    global env, cwd, header, slash, completer
     if (os.name == "posix"):
-        master_dict.flip()
+        # Swaps the primary values
+        master_dict.primary = {v: k for k, v in master_dict.primary.items()}
         env = 1
         slash = "/"
+    #This is called after the flip so that the auto completer is accessing the latest dictionary
+    from Auto_Complete import SystemCompleter
+    completer = SystemCompleter()
     cwd = os.getcwd()
     machine_name = socket.gethostname().split(".")
     header = "%s:~ %s$ " % (machine_name[0], os.getlogin())
