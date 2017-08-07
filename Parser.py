@@ -68,7 +68,7 @@ def Parse():
                 # If our modifier is in the modifier list, then we want the corresponding modifier from its translation
                 if param in command_keys:
                     index = command_keys.index(param)
-                    val = secondary_dict.get(output_cmd[0])
+                    val = master_dict.secondary.get(output_cmd[0])
                     output_cmd.append(val[index])
                 # If it's not a valid parameter, it might be a special command
                 elif Special(cmd[0], param) == 0:
@@ -84,7 +84,7 @@ def Parse():
     print("%s%s" % (header, "command not found"))
 
 def Special(prim, sec):
-    for v, k in special_dict.items():
+    for v, k in master_dict.special.items():
         if prim == v:
             try:
                 # Dynamically call the function indicated in our special dictionary
