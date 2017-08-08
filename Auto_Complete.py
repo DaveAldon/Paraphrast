@@ -30,8 +30,9 @@ class SystemCompleter(GrammarCompleter):
                 \s+
                 # Secondary grammar
                 (
+                    /(?P<smodifier>[^\s]+) |
                     (?P<filename>[^\s]+) |
-                    -(?P<modifier>[^\s]+) |
+                    -(?P<hmodifier>[^\s]+) |
                     "(?P<double_quoted_filename>[^\s]+)" |
                     '(?P<single_quoted_filename>[^\s]+)'
                 )
@@ -50,7 +51,8 @@ class SystemCompleter(GrammarCompleter):
             g,
             {
                 'executable': WordCompleter(master_dict.primary, meta_dict=master_dict.primary),
-                'modifier': WordCompleter(master_dict.secondary),
+                'hmodifier': WordCompleter(master_dict.secondary_h),
+                'smodifier': WordCompleter(master_dict.secondary_s),
                 'filename': PathCompleter(only_directories=False, expanduser=True),
                 'double_quoted_filename': PathCompleter(only_directories=False, expanduser=True),
                 'single_quoted_filename': PathCompleter(only_directories=False, expanduser=True),
