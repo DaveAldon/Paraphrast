@@ -2,7 +2,7 @@
 <b>Paraphrast</b>
 </p>
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0a57fc8d35f74e6e9611b57a808b7556)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DaveAldon/Paraphrast&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0a57fc8d35f74e6e9611b57a808b7556)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DaveAldon/Paraphrast&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.com/DaveAldon/Paraphrast.svg?token=eCnosqg9nhqR9WqTkK12&branch=master)](https://travis-ci.com/DaveAldon/Paraphrast)
 
 
 ***
@@ -32,7 +32,7 @@ That's right, not only does it translate Unix into DOS commands, it goes the oth
 - Auto-complete that's better than what you have (if you're still using a default CLI)
 
 ## The Mission
-I have a firm belief in magical user experiences, where what the user wants happens without any extra interaction beyond what's expected. 
+I have a firm belief in magical user experiences, where what the user wants happens without any extra interaction beyond what's expected.
 
 Because of this, each of my planned steps in developing this product must revolve around making the user's CLI work like it should on their favorite OS.
 
@@ -49,7 +49,7 @@ So now we can do this and stay happy...
 - Adherance to CI and code review results
 
 ## Current Requirements
-- Python 3+
+- Python 3.3+
 - Windows or Unix OS
 
 ## 3rd Party Plugins
