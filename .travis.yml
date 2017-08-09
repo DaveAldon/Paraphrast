@@ -9,4 +9,4 @@ install:
   - pip install prompt-toolkit
 # command to run tests
 script:
-  - Test
+  - Test.py
