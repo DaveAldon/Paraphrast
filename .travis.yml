@@ -5,9 +5,9 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
-  - "3.7-dev" # 3.7 development branch
-  - "nightly" # currently points to 3.7-dev
-# command to install dependencies
-install: "pip install -r prompt-toolkit"
+install:
+  - pip install tox-travis
+  - pip install prompt-toolkit
 # command to run tests
-script: setup.py
+script:
+  - tox
