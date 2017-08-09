@@ -6,8 +6,7 @@ python:
   - "3.5"
   - "3.6"
 install:
-  - pip install tox-travis
   - pip install prompt-toolkit
 # command to run tests
 script:
-  - tox
+  - Test

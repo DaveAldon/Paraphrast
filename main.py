@@ -5,6 +5,6 @@ import Parser
 def Start():
     Parser.Awake()
     while True:
-        Parser.Parse()
+        Parser.Prompt()
 
 Start()
