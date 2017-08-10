@@ -4,3 +4,5 @@ master_dict.cpython-36.pyc
 master_dict_unix.cpython-36.pyc
 Parser.cpython-36.pyc
 __pycache__/Auto_Complete.cpython-36.pyc
+htmlcov/
+.coverage
